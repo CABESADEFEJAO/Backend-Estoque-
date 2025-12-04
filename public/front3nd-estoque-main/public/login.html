@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>Login - Sistema de Estoque</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="page-geral">
+  <h1 class="page-title">Login</h1>
+
+  <div class="container">
+    <!-- FORM LOGIN -->
+    <div class="form-box Login">
+      <h2 class="animation" style="--D:1;">Bem-vindo de volta</h2>
+
+      <div class="input-box animation" style="--D:2;">
+        <input type="text" id="nome" required>
+        <label>Nome de usuário</label>
+        <i class="bx bx-user"></i>
+      </div>
+
+      <div class="input-box animation" style="--D:3;">
+        <input type="password" id="senha" required>
+        <label>Senha</label>
+        <i class="bx bx-lock-alt"></i>
+      </div></br>
+
+      <button class="btn animation" style="--D:4;" onclick="fazerLogin()">Entrar</button>
+
+      <p id="msg" class="erro animation" style="--D:5;"></p>
+
+      <p class="regi-link animation" style="--D:6;">
+        Não tem conta?
+        <a href="cadastro.html">Cadastre-se</a>
+      </p>
+    </div>
+
+    <!-- LADO DIREITO (INFORMAÇÃO) -->
+    <div class="info-content Login">
+      <h2 class="animation" style="--S:1;">Controle<br>seu estoque</h2>
+      <p class="animation" style="--S:2;">
+        Faça login para gerenciar seus produtos, atualizar quantidades e manter tudo organizado.
+      </p>
+    </div>
+
+    <div class="curved-shape"></div>
+    <div class="curved-shape2"></div>
+  </div>
+</div>
+
+<script>
+  async function fazerLogin() {
+    const nome = document.getElementById('nome').value;
+    const senha = document.getElementById('senha').value;
+    const msg = document.getElementById('msg');
+    msg.textContent = '';
+
+    if (!nome || !senha) {
+      msg.textContent = 'Preencha todos os campos.';
+      return;
+    }
+
+    try {
+      const resp = await fetch('https://backend-estoque-ik2m.onrender.com/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, senha })
+      });
+
+      const data = await resp.json();
+
+      if (!resp.ok) {
+        msg.textContent = data.error || 'Nome ou senha inválidos.';
+        return;
+      }
+
+      localStorage.setItem('usuarioLogado', 'true');
+      window.location.href = 'index.html';
+    } catch (err) {
+      console.error(err);
+      msg.textContent = 'Erro ao conectar com o servidor.';
+    }
+  }
+</script>
+
+</body>
+</html>
